@@ -3,7 +3,8 @@ from z3 import Solver
 
 
 class XORSampler:
-    def __init__(self, smt_str, sample_var_list, sample_constraints="", no_of_xor=5, p=.5, max_sample=100, max_loop=1000,
+    def __init__(self, smt_str, sample_var_list, sample_constraints="",
+                 no_of_xor=5, p=.5, max_sample=100, max_loop=1000,
                  need_only_one_sol=True, need_blocking=False):
         self.smt_str = smt_str
         self.sample_var_list = sample_var_list
@@ -14,7 +15,10 @@ class XORSampler:
         self.need_only_one_sol = need_only_one_sol
         self.need_blocking = need_blocking
 
-        self.smt2_content = {"original" : smt_str+"\n\n"+sample_constraints+"\n\n", "xor" : [], "blocking_loop1" : [], "blocking_loop2" : "", "check" : "\n(check-sat)\n(get-model)"}
+        self.smt2_content = {"original": smt_str+"\n\n",
+                             "sample_constraints": sample_constraints+"\n\n",
+                             "xor": [], "blocking_loop1": [], "blocking_loop2": "",
+                             "check": "\n(check-sat)\n(get-model)"}
         self.blocking_str = ""
         self.res = dict()
         self.samples = list()
@@ -23,6 +27,7 @@ class XORSampler:
         # update the self.smt_str
         smt_str = ""
         smt_str += self.smt2_content["original"]
+        smt_str += self.smt2_content["sample_constraints"]
 
         for lines in self.smt2_content["xor"]:
             smt_str += "%s" % lines
